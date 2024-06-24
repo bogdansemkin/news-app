@@ -1,0 +1,131 @@
+openapi: 3.0.0
+info:
+  title: News App API
+  description: API for managing posts in the News App
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local server
+paths:
+  /posts:
+    get:
+      summary: Get all posts
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 0
+          description: Number of posts to return
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            default: 0
+          description: Number of posts to skip
+      responses:
+        '200':
+          description: A list of posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        '500':
+          description: Server error
+    post:
+      summary: Create a new post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+      responses:
+        '200':
+          description: Successfully created
+        '500':
+          description: Server error
+    put:
+      summary: Update an existing post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+      responses:
+        '200':
+          description: Successfully updated
+        '500':
+          description: Server error
+  /posts/{id}:
+    get:
+      summary: Get a post by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the post to retrieve
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 0
+          description: Number of posts to return (not used for single post retrieval, but kept for consistency)
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            default: 0
+          description: Number of posts to skip (not used for single post retrieval, but kept for consistency)
+      responses:
+        '200':
+          description: A single post
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          description: Post not found
+        '500':
+          description: Server error
+    delete:
+      summary: Delete a post by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the post to delete
+      responses:
+        '200':
+          description: Successfully deleted
+        '500':
+          description: Server error
+components:
+  schemas:
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Sample Post Title"
+        content:
+          type: string
+          example: "Sample Post Content"
+        created_at:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00Z"
